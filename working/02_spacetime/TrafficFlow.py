@@ -13,8 +13,8 @@ dt = 0.001
 
 # Set initial conditions
 x = numpy.linspace(0,L,nx)
-rho_1 = 10
-rho_2 = 150
+rho_1 = 20
+rho_2 = 50
 rho = numpy.ones(nx)*rho_1
 rho[10:20] = rho_2
 rho_n = numpy.ones(nx)
