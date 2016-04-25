@@ -61,7 +61,7 @@ def init_conditions():
     
     
 def computeF(u):
-    """Computes Eiler's flux
+    """Computes Euler's flux
 
     Parameters
     ----------
@@ -101,7 +101,7 @@ def richtmyer(u, T):
         Array with conserved variables at the moment T at every point x
     """          
     
-    #setup some temporary arrays
+    # setup some temporary arrays
     u_n = u.copy()
     F = numpy.zeros_like(u) 
     ustar = numpy.zeros((nx-1, 3))
@@ -118,6 +118,44 @@ def richtmyer(u, T):
         u = u_n.copy()
         
     return u_n
+
+def godunov(u, T):
+    """ Computes the solution with the Godunov scheme
+    
+    Parameters
+    ----------
+    u : array of floats
+        Array with conserved variables at every point x
+    T : float
+        End time
+        
+    Returns
+    -------
+    u : array of floats
+        Array with conserved variables at the moment T at every point x
+    """            
+    
+    # setup some temporary arrays
+    u_n = u.copy()
+    F = numpy.zeros_like(u) 
+    ustar = numpy.zeros((nx-1, 3))
+    Fstar = numpy.zeros((nx-1, 3))
+    nt = int(T/dt)
+    
+    for t in range(1,nt):
+        
+        rho_plus[:-1] = rho[1:] # Can't do i+1/2 indices, so cell boundary
+        rho_minus = rho.copy()  # arrays at index i are at location i+1/2
+        F = 0.5 * (computeF(V_max, rho_max, rho_minus) + 
+                   computeF(V_max, rho_max, rho_plus) + 
+                   dx / dt * (rho_minus - rho_plus))
+        rho_n[1:-1] = rho[1:-1] + dt/dx*(F[:-2] - F[1:-1])
+        rho_n[0] = rho[0]
+        rho_n[-1] = rho[-1]
+        rho = rho_n.copy()
+        
+    return rho_n
+    
 
 x = numpy.linspace(-L/2,L/2,nx)
 i = numpy.where(x==2.5)
