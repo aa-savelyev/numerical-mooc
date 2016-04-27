@@ -158,13 +158,13 @@ def godunov(u, T):
     
 
 x = numpy.linspace(-L/2,L/2,nx)
-i = numpy.where(x==2.5)
+i = int(numpy.where(x==2.5)[0])
 
 u = init_conditions()
-#display(x, u, i, 'v', ls='--')
+display(x, u, i, 'rho', ls='--')
 u_n = richtmyer(u, 0.01)
 display(x, u_n, i, 'rho', ls='-')
 
-#print(u_n[i])
+print(u_n[i])
 
 
